@@ -4,9 +4,9 @@
 //const IcoBonusAPI = require('../build/contracts/Bonus.json').abi;
 module.exports={
 	connection:{
-		host:"localhost",
+		host:"103.57.220.77",
 		user:"root",
-		password:"",
+		password:"5Vw6@FKEElv*",
 		database:"cgncoin"
 	},
 	web3Provider:{
