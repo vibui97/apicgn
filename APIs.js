@@ -12,7 +12,7 @@ if(typeof web3 !== 'undefined') {
 	web3 = new Web3(web3.currentProvider);
 }else{
 	//web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/1fRpT5XjlePDzwsm3mkR'));
-	web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider.local));
+	web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider.testNet));
 }
 
 /*var TokenContract = new web3.eth.Contract(config.smartcontract.tokenContract.abi, config.smartcontract.tokenContract.address);
