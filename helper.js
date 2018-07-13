@@ -1,3 +1,4 @@
+var crypto = require("crypto");
 module.exports={
 	response:function(status=true,message="",value=""){
 		var data = {Status:status,
