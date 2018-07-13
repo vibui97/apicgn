@@ -12,7 +12,11 @@ module.exports={
 	web3Provider:{
 		local:"http://localhost:8545",
 		testNet:"https://ropsten.infura.io/1fRpT5XjlePDzwsm3mkR"
-	}/*,
+	},
+	keyRandom:{
+		key: "8RVLfPNoTkuoBwShCYeRkmefdjTthCNdXdWOsJq7Y8tfEhsYv41wDmpIx3BdBZFxMiQMxH3Pmojrj6BbJ64pcyYTEv8EB0rNJdu"
+	}
+	/*,
 	smartcontract:{
 		tokenContract: {
 			address: "0x87618aec639812f0cc9aa3db24f4419a18f1b087",
