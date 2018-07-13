@@ -11,7 +11,7 @@ module.exports={
 	},
 	web3Provider:{
 		local:"http://localhost:8545",
-		testNet:""
+		testNet:"https://ropsten.infura.io/1fRpT5XjlePDzwsm3mkR"
 	}/*,
 	smartcontract:{
 		tokenContract: {
