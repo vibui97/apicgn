@@ -37,11 +37,11 @@ module.exports=function(app){
 		var privateKeyDescryption = helper.descrypt(config.keyRandom.key,privateKeyEncryption);
 		if(value.privateKey == privateKeyDescryption){
 			console.log("Encrypt successfully!");
-			fs.writeFile('privateKeyEncryption.txt',privateKeyEncryption, function (err) {
-				if (err) 
-					return console.log(err);
-				console.log('Save private key encryption successfully!');
-			});
+// 			fs.writeFile('privateKeyEncryption.txt',privateKeyEncryption, function (err) {
+// 				if (err) 
+// 					return console.log(err);
+// 				console.log('Save private key encryption successfully!');
+// 			});
 
 		}else{
 			console.log("Encrypt error!");
