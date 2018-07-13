@@ -26,44 +26,33 @@ module.exports=function(app){
 	app.get('/', function (req, res) {
 		res.send("API is Connected!");
 	});
+
 	app.get("/api/generaWallet",function(req, res){
 		var statusCode = (res.statusCode==200)? true : false;
 		var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
-		var result = eth.accounts.create(web3.utils.randomHex(32))
-		var value = (res.statusCode==200)? result: null ;
-		var privateKeyEncryption = helper.encrypt(config.keyRandom.key,value.privateKey);
-		console.log(privateKeyEncryption);
-		value.privateKeyEncryption = privateKeyEncryption;
-		var privateKeyDescryption = helper.descrypt(config.keyRandom.key,privateKeyEncryption);
-		if(value.privateKey == privateKeyDescryption){
-			console.log("Encrypt successfully!");
-// 			fs.writeFile('privateKeyEncryption.txt',privateKeyEncryption, function (err) {
-// 				if (err) 
-// 					return console.log(err);
-// 				console.log('Save private key encryption successfully!');
-// 			});
 
-		}else{
-			console.log("Encrypt error!");
-		}
+		var value = (res.statusCode==200)? eth.accounts.create(web3.utils.randomHex(32)): null ;
+		var privateKeyEncryption = helper.encrypt(config.keyRandom.key,value.privateKey);
+		value.privateKey = privateKeyEncryption;
 		res.send(helper.response(statusCode,message,value));
 	});
-	
-	app.get('/api/encryptionKey', function (req, res) {
+
+	app.post('/api/descryptionPrivateKey', function (req, res) {
 		var statusCode = (res.statusCode==200)? true : false;
-		const secret = '7JSPT2tPUjke0jpGaL45';
-		var isParameter=helper.isParameter(req.query, ['key']);
+		var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
+
+		var isParameter=helper.isParameter(req.body, ['key']);
 		if(isParameter.length>0){
 			statusCode = 404;
 			res.send("Missing Parameter: "+isParameter.toString());
 		}
-		const hash = crypto.createHmac('sha256', secret).update(req.query.key).digest('hex');
-		var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
-		var value = (res.statusCode==200)? hash : null ;
+
+		var result = helper.descrypt(config.keyRandom.key,req.body.key);
+		var value = (res.statusCode==200)? result : null ;
+
 		res.send(helper.response(statusCode,message,value));
 	});
 
-	
 	app.post('/api/checkBalance', function(req,res){
 		console.log('aaaa');
 		var statusCode = (res.statusCode==200)? true : false;
@@ -73,12 +62,45 @@ module.exports=function(app){
 			res.send("Missing Parameter: "+isParameter.toString());
 		}
 		web3.eth.getBalance(req.body.wallet).then(function(log){
-		var statusCode = (res.statusCode==200)? true : false;
-		var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
-		var value = (res.statusCode==200)? web3.utils.fromWei(log,'ether') : null ;
-		res.send(helper.response(statusCode,message,value));
+			var statusCode = (res.statusCode==200)? true : false;
+			var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
+			var value = (res.statusCode==200)? web3.utils.fromWei(log,'ether') : null ;
+			res.send(helper.response(statusCode,message,value));
+		});
 	});
-});
+
+	app.get('/api/encryptionKey', function (req, res) {
+			var statusCode = (res.statusCode==200)? true : false;
+			const secret = '7JSPT2tPUjke0jpGaL45';
+			var isParameter=helper.isParameter(req.query, ['key']);
+			if(isParameter.length>0){
+				statusCode = 404;
+				res.send("Missing Parameter: "+isParameter.toString());
+			}
+			const hash = crypto.createHmac('sha256', secret).update(req.query.key).digest('hex');
+			var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
+			var value = (res.statusCode==200)? hash : null ;
+			res.send(helper.response(statusCode,message,value));
+		});
+
+	// app.get("/api/generaWallet",function(req, res){
+	// 	var statusCode = (res.statusCode==200)? true : false;
+	// 	var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
+	// 	var value = (res.statusCode==200)? eth.accounts.create(web3.utils.randomHex(32)) : null ;
+	// 	// var obj = JSON.parse(value);
+
+	// 	// var obj = JSON.parse(valu);
+	// 	// var privateKeyNotEncrytion = json.Value.privateKey;
+	// 	// var privateKeyEncryption = helper.encrypt(key,json.Value.privateKey);
+	// 	// console.log(privateKeyEncryption);
+	// 	// var obj = JSON.parse(privateKeyEncryption);
+	// 	// obj['Value'].push({"privateKeyEncryption":privateKeyEncryption});
+	// 	// jsonStr = JSON.stringify(obj);
+
+	// 	res.send(helper.response(statusCode,message,value));
+	// });
+	
+	
 	/*
 	app.get('/api/getBalance', function (req, res) {
 		//console.log("aaa");
