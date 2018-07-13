@@ -29,7 +29,23 @@ module.exports=function(app){
 	app.get("/api/generaWallet",function(req, res){
 		var statusCode = (res.statusCode==200)? true : false;
 		var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
-		var value = (res.statusCode==200)? eth.accounts.create(web3.utils.randomHex(32)) : null ;
+		var result = eth.accounts.create(web3.utils.randomHex(32))
+		var value = (res.statusCode==200)? result: null ;
+		var privateKeyEncryption = helper.encrypt(config.keyRandom.key,value.privateKey);
+		console.log(privateKeyEncryption);
+		value.privateKeyEncryption = privateKeyEncryption;
+		var privateKeyDescryption = helper.descrypt(config.keyRandom.key,privateKeyEncryption);
+		if(value.privateKey == privateKeyDescryption){
+			console.log("Encrypt successfully!");
+			fs.writeFile('privateKeyEncryption.txt',privateKeyEncryption, function (err) {
+				if (err) 
+					return console.log(err);
+				console.log('Save private key encryption successfully!');
+			});
+
+		}else{
+			console.log("Encrypt error!");
+		}
 		res.send(helper.response(statusCode,message,value));
 	});
 	
