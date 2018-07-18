@@ -101,6 +101,13 @@ module.exports=function(app){
 		request(APILink+queryString, function (error, response, body) {
 			if(!error && response.statusCode == 200) {
 				var dataJson = JSON.parse(body);
+				var i; 
+
+				for(i=0;i<dataJson.result.length;i++){
+					var log = web3.utils.fromWei(dataJson.result[i].value,'ether');
+					dataJson.result[i].value = log;
+				}
+				
 				res.send(dataJson);
 			}
 		});
