@@ -7,6 +7,8 @@ const util = require('util');
 var Tx = require('ethereumjs-tx');
 var config = require('./config.js');
 var helper = require('./helper.js');
+var request = require('request');
+var httpBuildQuery = require('http-build-query');
 
 if(typeof web3 !== 'undefined') {
 	web3 = new Web3(web3.currentProvider);
@@ -82,6 +84,27 @@ module.exports=function(app){
 			var value = (res.statusCode==200)? hash : null ;
 			res.send(helper.response(statusCode,message,value));
 		});
+		app.get('/api/transactionETH', function (req, res) {
+		var statusCode = (res.statusCode==200)? true : false;
+		var isParameter=helper.isParameter(req.query, ['address']);
+		if(isParameter.length>0){
+			statusCode = 404;
+			res.send("Missing Parameter: "+isParameter.toString());
+		}
+		var APILink = config.apiEtherscan.testNet;
+		var queryString = httpBuildQuery({
+			module:"account",
+			action:"txlist",
+			address:req.query.address,
+			apikey:config.apiEtherscan.apikey
+		});
+		request(APILink+queryString, function (error, response, body) {
+			if(!error && response.statusCode == 200) {
+				var dataJson = JSON.parse(body);
+				res.send(dataJson);
+			}
+		});
+	});
 
 	// app.get("/api/generaWallet",function(req, res){
 	// 	var statusCode = (res.statusCode==200)? true : false;
