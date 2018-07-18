@@ -15,6 +15,11 @@ module.exports={
 	},
 	keyRandom:{
 		key: "8RVLfPNoTkuoBwShCYeRkmefdjTthCNdXdWOsJq7Y8tfEhsYv41wDmpIx3BdBZFxMiQMxH3Pmojrj6BbJ64pcyYTEv8EB0rNJdu"
+	},
+	apiEtherscan: {
+		testNet:"https://api-ropsten.etherscan.io/api?",
+		menNet : "",
+		apikey: "FWJ3RE96AZUTFK9E15I1NBMTNARWT38BW7"
 	}
 	/*,
 	smartcontract:{
