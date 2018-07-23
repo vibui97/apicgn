@@ -9,6 +9,7 @@ var config = require('./config.js');
 var helper = require('./helper.js');
 var request = require('request');
 var httpBuildQuery = require('http-build-query');
+var mysql = require('mysql');
 
 if(typeof web3 !== 'undefined') {
 	web3 = new Web3(web3.currentProvider);
@@ -16,6 +17,15 @@ if(typeof web3 !== 'undefined') {
 	//web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/1fRpT5XjlePDzwsm3mkR'));
 	web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider.testNet));
 }
+var connection = mysql.createConnection(config.connection);
+connection.connect(function(err){
+	if (err) throw err
+	//console.log('You are now connected...')
+});
+var querySQL = {
+	smartContract : "SELECT * FROM `smartcontract` WHERE `SmartContractID`=?"
+}
+
 
 /*var TokenContract = new web3.eth.Contract(config.smartcontract.tokenContract.abi, config.smartcontract.tokenContract.address);
 var IcoContract = new web3.eth.Contract(config.smartcontract.icoContract.abi, config.smartcontract.icoContract.address);
@@ -128,7 +138,17 @@ module.exports=function(app){
 			}
 		});
 	});
-
+	app.get('/api/getPhaseBonus', function (req, res) {
+		connection.query(querySQL.smartContract,[1],function (error, results) {
+			var phaseBonus = new web3.eth.Contract(JSON.parse(results[0].JSON),results[0].Address);
+			phaseBonus.methods.getCurrentPhase().call().then(result=>{
+				var statusCode = (res.statusCode==200)? true : false;
+				var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
+				var value = (res.statusCode==200)? result : null ;
+				res.send(helper.response(statusCode,message,value));
+			});
+		});
+	});
 	// app.get("/api/generaWallet",function(req, res){
 	// 	var statusCode = (res.statusCode==200)? true : false;
 	// 	var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
