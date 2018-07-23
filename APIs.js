@@ -120,6 +120,27 @@ module.exports=function(app){
 		statusCode = 404;
 		res.send("Missing Parameter: "+isParameter.toString());
 	}
+	
+	var APILink = config.apiEtherscan.testNet;
+	var queryString = httpBuildQuery({
+	module:"account",
+	action:"txlist",
+	address:req.query.address,
+	apikey:config.apiEtherscan.apikey
+	});
+	request(APILink+queryString, function (error, response, body) {
+		if(!error && response.statusCode == 200) {
+			var dataJson = JSON.parse(body);
+			var i; 
+			for(i=0;i<dataJson.result.length;i++){
+				var log = web3.utils.fromWei(dataJson.result[i].value,'ether');
+				dataJson.result[i].value = log;
+			}
+			res.send(dataJson);
+		}
+	    });
+	});
+	
 	app.get('/api/getPhaseBonus', function (req, res) {
 		connection.query(querySQL.smartContract,[1],function (error, results) {
 			var phaseBonus = new web3.eth.Contract(JSON.parse(results[0].JSON),results[0].Address);
@@ -129,27 +150,6 @@ module.exports=function(app){
 				var value = (res.statusCode==200)? result : null ;
 				res.send(helper.response(statusCode,message,value));
 			});
-		});
-	});
-var APILink = config.apiEtherscan.testNet;
-var queryString = httpBuildQuery({
-	module:"account",
-	action:"txlist",
-	address:req.query.address,
-	apikey:config.apiEtherscan.apikey
-});
-		request(APILink+queryString, function (error, response, body) {
-			if(!error && response.statusCode == 200) {
-				var dataJson = JSON.parse(body);
-				var i; 
-
-				for(i=0;i<dataJson.result.length;i++){
-					var log = web3.utils.fromWei(dataJson.result[i].value,'ether');
-					dataJson.result[i].value = log;
-				}
-				
-				res.send(dataJson);
-			}
 		});
 	});
 
