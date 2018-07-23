@@ -38,6 +38,22 @@ module.exports=function(app){
 		value.privateKey = privateKeyEncryption;
 		res.send(helper.response(statusCode,message,value));
 	});
+	
+	app.post('/api/encryptionPrivateKey',function(req,res){
+		var statusCode = (res.statusCode==200)? true : false;
+		var message = (res.statusCode==200)? "Successful!" : "Error, please try again!";
+
+		var isParameter=helper.isParameter(req.body, ['key']);
+		if(isParameter.length>0){
+			statusCode = 404;
+			res.send("Missing Parameter: "+isParameter.toString());
+		}
+
+		var result = helper.encrypt(config.keyRandom.key,req.body.key);
+		var value = (res.statusCode==200)? result : null ;
+
+		res.send(helper.response(statusCode,message,value));
+	})
 
 	app.post('/api/descryptionPrivateKey', function (req, res) {
 		var statusCode = (res.statusCode==200)? true : false;
